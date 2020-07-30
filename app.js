@@ -1,13 +1,16 @@
 const dotenv=require('dotenv');
+const ejs=require('ejs')
 const express=require("express");
-
 const connectDB=require('./config/db');
-
 const passport=require("passport");
-const session=require('express-session')
+const mongoose=require('mongoose');
+const authRoutes=require('./routes/api/auth')
 
+const session=require('express-session')
+ 
 const app =express();
 
+app.set('view engine','ejs');
 //loading config
 dotenv.config({path:'./config/config.env'});
 //using passport route
@@ -28,11 +31,11 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.get('/',(req,res)=>res.send('Api running'));
+app.get('/',(req,res)=>res.render('home'));
 //defining routes
-app.use("/api/users",require('./routes/api/users'));
 
-app.use("/api/auth",require('./routes/api/auth'));
+
+app.use('/auth',authRoutes)
 
 
 const PORT=process.env.PORT||5000
